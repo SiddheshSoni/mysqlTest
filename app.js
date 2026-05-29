@@ -17,18 +17,61 @@ connection.connect((err)=>{
     }
     console.log("Connection Successfull!!");
     
-    const creationQuery = `create table Students(
+    const usersTableQuery = `
+    CREATE TABLE Users(
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(20),
         email VARCHAR(20)
-    )`
-    connection.execute(creationQuery, (err)=>{
+    )`;
+
+    const busTableQuery = `CREATE TABLE Buses(
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        busNumber INT,
+        totalSeats INT,
+        availableSeats INT
+    )`;
+    const bookingTableQuery =`CREATE TABLE Bookings(
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        seatNumber INT
+    )`;
+
+    const paymentsTableQuery = `CREATE TABLE Payments(
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        amountPaid INT,
+        paymentStatus VARCHAR(20)
+    )`;
+
+    connection.execute(usersTableQuery, (err)=>{
         if(err){
             console.log(err);
             connection.end();
             return;
         }
-        console.log("Table Created!");
+        console.log("Users Table Created!");
+    });
+    connection.execute(busTableQuery, (err)=>{
+        if(err){
+            console.log(err);
+            connection.end();
+            return;
+        }
+        console.log("Buses Table Created!");
+    });
+    connection.execute(bookingTableQuery, (err)=>{
+        if(err){
+            console.log(err);
+            connection.end();
+            return;
+        }
+        console.log("Bookings Table Created!");
+    });
+    connection.execute(paymentsTableQuery, (err)=>{
+        if(err){
+            console.log(err);
+            connection.end();
+            return;
+        }
+        console.log("Payments Table Created!");
     });
 
 });
