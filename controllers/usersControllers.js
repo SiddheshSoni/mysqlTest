@@ -1,35 +1,33 @@
-const db = require('../utils/db-connection');
-const errResponse = require('../utils/erroResp');
+const Users = require('../modals/Users');
 
-const addUser = (req, res)=>{
+const addUser = async (req, res)=>{
+    try{
+        const {name, email, age} = req.body;
+       
+        const user = await Users.create({
+            name, 
+            email,
+            age
+        });
 
-    const {name, email} = req.body;
-
-    const addUserQuery = ` INSERT INTO Users (name, email) VALUES (?,?)`;
-
-    db.execute(addUserQuery, [name, email], (err)=>{
-        if(err){
-            console.log(err.message);
-            res.status(500).send(err.message);
-            return;
-        }
-
-        res.status(200).send("user added!");
-    })
+        res.status(200).send("Added new user successfully!");
+    }catch(err){
+        res.status(500).send("Failed to add user! Error: " +  err);
+    }
 
 };
 
-const getUser = (req, res)=>{
-    const getUsersQuery = `SELECT * FROM Users`;
-    db.execute(getUsersQuery, (err, result)=>{
-        if(err){
-            console.log(err.message);
-            res.status(500).send(err.message);
-            return;
-        }
-        console.log(result);
+const getUser = async (req, res)=>{
+    try{
+        const users = await Users.findAll();
+
+        if(!users) res.status(404).send("No Users Record Found!");
+
+        console.log(users);
         res.status(200).send("got all user info!");
-    })
+    }catch(err){
+        res.status(500).send("Failed to get users table! Error: " +  err);
+    }
 };
 
 module.exports = {

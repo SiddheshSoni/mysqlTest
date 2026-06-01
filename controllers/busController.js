@@ -1,34 +1,37 @@
-const db = require('../utils/db-connection');
-const errResponse = require('../utils/erroResp');
+const Buses = require("../modals/Buses");
 
-const addBus = (req, res)=>{
-    const {busNumber, totalSeats, availableSeats} = req.body;
 
-    const getBusQuery = `INSERT INTO Buses (busNumber, totalSeats, availableSeats) VALUES (?,?,?)`;
-    db.execute(getBusQuery,[busNumber, totalSeats, availableSeats], (err, result)=>{
-        if(err){
-            console.log(err.message);
-            res.status(500).send(err.message);
-            return;
-        }
-        console.log(result);
-        res.status(200).send("Added bus info!");
-    })
+const addBus = async (req, res)=>{
+    try{
+        const {busNumber, totalSeats, availableSeats} = req.body;
+
+        const bus = await Buses.create({
+            busNumber,
+            totalSeats,
+            availableSeats
+        });
+
+        res.status(200).send("Added Bus Successfully!");
+    }catch(err){
+        res.status(500).send('Failed adding bus! Error:'+ err);
+    }
 };
 
-const getAvailableSeats = (req, res)=>{
-    const {id } = req.params;
+const getAvailableSeats = async (req, res)=>{
+    try{
+        const {id } = req.params;
+        const bus = await Buses.findByPk(id);
 
-    const getAvaiableSeatsQuery = `SELECT availableSeats FROM Buses WHERE id = ?`;
-    db.execute(getAvaiableSeatsQuery,[id], (err, result)=>{
-        if(err){
-            console.log(err.message);
-            res.status(500).send(err.message);
-            return;
+        if(!bus){
+            return res.status(404).send("No bus fround with id: " + id);
         }
-        console.log(result);
-        res.status(200).send("got all bus info!");
-    })
+
+        console.log(bus);
+        res.status(200).send("Got Available seats details!");
+        
+    }catch(err){
+        res.status(500).send("Failed getting bus details");
+    }
 };
 
 
