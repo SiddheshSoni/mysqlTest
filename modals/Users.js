@@ -16,8 +16,8 @@ const Users = sequelize.define('Users',{
         type: DataTypes.STRING,
         allowNull: false
     },
-    age:{
-        type: DataTypes.INTEGER,
+    phone:{
+        type: DataTypes.STRING,
         allowNull:false
     }
 });
