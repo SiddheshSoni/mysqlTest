@@ -1,4 +1,4 @@
-const Buses = require("../modals/Buses");
+const Buses = require("../models/Buses");
 
 
 const addBus = async (req, res)=>{
@@ -34,8 +34,33 @@ const getAvailableSeats = async (req, res)=>{
     }
 };
 
+const getBusBookings = async (req, res) => {
+    try {
+        const busId = req.params.id;
+
+        const bookings = await Bookings.findAll({
+            where: {
+                busId: busId
+            },
+            include: [
+                {
+                    model: Users,
+                    attributes: ['name', 'email']
+                }
+            ]
+        });
+
+        res.status(200).json(bookings);
+
+    } catch (err) {
+        res.status(500).json({
+            message: err.message
+        });
+    }
+};
 
 module.exports = {
     addBus,
-    getAvailableSeats
+    getAvailableSeats,
+    getBusBookings,
 }

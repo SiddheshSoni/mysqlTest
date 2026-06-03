@@ -1,13 +1,12 @@
-const Users = require('../modals/Users');
+const Users = require('../models/Users');
 
 const addUser = async (req, res)=>{
     try{
-        const {name, email, phone} = req.body;
+        const {name, email } = req.body;
        
         const user = await Users.create({
             name, 
-            email,
-            phone
+            email
         });
 
         res.status(200).send("Added new user successfully!");
@@ -30,6 +29,31 @@ const getUser = async (req, res)=>{
     }
 };
 
+const getUserBookings = async (req, res) => {
+    try {
+        const userId = req.params.id;
+
+        const bookings = await Bookings.findAll({
+            where: {
+                userId: userId
+            },
+            include: [
+                {
+                    model: Buses,
+                    attributes: ['busNumber']
+                }
+            ]
+        });
+
+        res.status(200).json(bookings);
+
+    } catch (err) {
+        res.status(500).json({
+            message: err.message
+        });
+    }
+};
+
 const deleteUser = async(req, res)=>{
     try{
         const {id} = req.params;
@@ -49,5 +73,6 @@ const deleteUser = async(req, res)=>{
 module.exports = {
     addUser,
     getUser,
+    getUserBookings,
     deleteUser,
 }
